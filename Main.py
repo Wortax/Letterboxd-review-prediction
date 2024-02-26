@@ -2,7 +2,7 @@ from Web_scrapping import *
 from Machine_learning import *
 import re
 import PySimpleGUI as sg
-from datetime import date
+from datetime import datetime
 
 class CancelExecution(Exception):
     pass
@@ -45,8 +45,8 @@ while True:
         break
     if event == 'Submit':
         try :
-            today = date.today()
-            d1 = str("CSV/Train_dataset_"+today.strftime("%d-%m-%Y")+".csv")
+            today = datetime.today()
+            d1 = str("CSV/Train_dataset_"+today.strftime("%d-%m-%Y-%H-%M")+".csv")
             
             if Create_dataset(values["TrDtIn"],d1) == 0 :
                 raise CancelExecution("Execution Canceled")
@@ -63,8 +63,8 @@ while True:
         
     elif event == 'Submit URL':
         try :
-            today = date.today()
-            d1 = str("CSV/Movie_dataset_"+today.strftime("%d-%m-%Y")+".csv")
+            today = datetime.today()
+            d1 = str("CSV/Movie_dataset_"+today.strftime("%d-%m-%Y-%H-%M")+".csv")
             
             if Create_predict_dataset(d1,Get_urls_from_list(values["ListURL"])) == 0 :
                 raise CancelExecution("Execution Canceled")
@@ -97,10 +97,12 @@ while True:
             for i in range(1,len(data2)):
                 r = check_movie(data2.iloc[i],rf,actors_dict,dir_dict)
                 list_result.append(r)
-            predict_dataset(list_result,"CSV/Prediction_Result.csv")
+            
+            today = datetime.today()
+            d1 = str("CSV/Prediction_Result_"+today.strftime("%d-%m-%Y-%H-%M")+".csv")
+            
+            predict_dataset(list_result,d1)
 
-            today = date.today()
-            d1 = str("CSV/Prediction_Result_"+today.strftime("%d-%m-%Y")+".csv")
             window['predict_text'].Update(visible = True,text_color='pale green')
             window['predict_text'].Update('Prediction file Created at '+d1)
             
