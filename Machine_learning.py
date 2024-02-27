@@ -32,12 +32,20 @@ def Create_actdict(dataframe):
         if value not in dict_ :
             dict_[value]=len(dict_.keys())+1
     return dict_
+    
+def Create_coundict(dataframe):
+    dict_={}
+    for i in range(0,len(dataframe)):
+        value = dataframe["Country"][i]
+        if value not in dict_ :
+            dict_[value]=len(dict_.keys())+1
+    return dict_
 
 def Process_y(y) :
     return y.map({0:0, 0.5:1, 1:2, 1.5:3, 2:4, 2.5:5, 3:6, 3.5:7, 4:8, 4.5:9, 5:10})
 
 
-def Process_data(dataframe,remove_ownrate,act_dict,dir_dict):
+def Process_data(dataframe,remove_ownrate,act_dict,dir_dict,coun_dict):
     if remove_ownrate :
          dataframe = dataframe.drop(['Title',"Own_Rate"],axis=1)
     else :
@@ -48,6 +56,7 @@ def Process_data(dataframe,remove_ownrate,act_dict,dir_dict):
     dataframe['Director'] = dataframe['Director'].map(dir_dict).fillna(0)
     dataframe['Actor1'] = dataframe['Actor1'].map(act_dict).fillna(0)
     dataframe['Actor2'] = dataframe['Actor2'].map(act_dict).fillna(0)
+    dataframe['Country'] = dataframe['Country'].map(coun_dict).fillna(0)
     return dataframe
 
 def Precision_test(pred,value):
@@ -70,15 +79,14 @@ def Precision_test(pred,value):
 
   
 def Train(x,y):
-    rf = RandomForestClassifier(n_estimators = 15, max_depth= 8, random_state = 1)
+    rf = RandomForestClassifier(n_estimators = 100, max_depth=None, random_state = 1)
     rf.fit(x, y)
     return rf
 
-def check_movie(data,rf,act_dict,dir_dict):
-    df = pd.DataFrame([data], columns=["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2"])
-    df = Process_data(df,False,act_dict,dir_dict)
+def check_movie(data,rf,act_dict,dir_dict,coun_dict):
+    df = pd.DataFrame([data], columns=["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2","Country"])
+    df = Process_data(df,False,act_dict,dir_dict,coun_dict)
     return [data[0], rf.predict(df)[0]/2]
-
 
 
 
