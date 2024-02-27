@@ -86,8 +86,9 @@ while True:
             
             dir_dict = Create_dirdict(data)
             actors_dict = Create_actdict(data)
+            coun_dict = Create_coundict(data)
             
-            train_x = Process_data(data,True,actors_dict,dir_dict)
+            train_x = Process_data(data,True,actors_dict,dir_dict,coun_dict)
             train_y = Process_y(data["Own_Rate"])
 
 
@@ -95,7 +96,9 @@ while True:
 
             list_result= []
             for i in range(1,len(data2)):
-                r = check_movie(data2.iloc[i],rf,actors_dict,dir_dict)
+                r = check_movie(data2.iloc[i],rf,actors_dict,dir_dict,coun_dict)
+                if not sg.one_line_progress_meter('Progress Meter', i+1, len(data2), 'List Dataset Creation :') and i+1 != len(data2):
+            	    raise CancelExecution("Execution Canceled")
                 list_result.append(r)
             
             today = datetime.today()
@@ -119,11 +122,12 @@ while True:
             data.drop(data.tail(len(data)//10).index,inplace = True)
             dir_dict = Create_dirdict(data)
             actors_dict = Create_actdict(data)
+            coun_dict = Create_coundict(data)
 
-            train_x = Process_data(data,True,actors_dict,dir_dict)
+            train_x = Process_data(data,True,actors_dict,dir_dict,coun_dict)
             train_y = Process_y(data["Own_Rate"])
 
-            test_x = Process_data(data2,True,actors_dict,dir_dict)
+            test_x = Process_data(data2,True,actors_dict,dir_dict,coun_dict)
             test_y = Process_y(data2["Own_Rate"])
 
 
