@@ -37,7 +37,12 @@ def Get_realease_date(jsonobj) :
 
 def Get_genre(jsonobj) :
     return jsonobj["genre"]
-
+    
+def Get_country(jsonobj):
+    try :
+    	return jsonobj["countryOfOrigin"][0]["name"]
+    except :
+    	return ""
 
 
 
@@ -100,6 +105,8 @@ def Get_allinfo(url,rate="") :
             info_list.append(genre[1])
         else :
             info_list.append("")
+            
+        info_list.append(Get_country(jsondiv))
 
         if len(rate)>0:
             info_list.append(rate)
@@ -111,7 +118,7 @@ def Get_allinfo(url,rate="") :
 
 
 def Create_dataset(rate_file,outfile_data): 
-    dataset = [["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2","Own_Rate"]]
+    dataset = [["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2","Country","Own_Rate"]]
     with open(rate_file, 'r') as file:
           csvreader = csv.reader(file)
           a=True
@@ -141,7 +148,7 @@ def Create_dataset(rate_file,outfile_data):
     outfile.close()
 
 def Create_predict_dataset(output_file,movie_list):
-    dataset = [["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2"]]
+    dataset = [["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2","Country"]]
     for i in range(0,len(movie_list)) :
         dataset.append(Get_allinfo(movie_list[i]))
         if not sg.one_line_progress_meter('Progress Meter', i+1, len(movie_list), 'List Dataset Creation :') and i+1 != len(movie_list):
