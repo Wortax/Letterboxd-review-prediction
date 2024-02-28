@@ -92,12 +92,14 @@ while True:
             train_y = Process_y(data["Own_Rate"])
 
 
-            rf = Train(train_x, train_y)
+            train_mod = Train(train_x, train_y)
+            rf = train_mod[0]
+            model = train_mod[1]
 
             list_result= []
             for i in range(1,len(data2)):
-                r = check_movie(data2.iloc[i],rf,actors_dict,dir_dict,coun_dict)
-                if not sg.one_line_progress_meter('Progress Meter', i+1, len(data2), 'List Dataset Creation :') and i+1 != len(data2):
+                r = check_movie(data2.iloc[i],rf,model,actors_dict,dir_dict,coun_dict)
+                if not sg.one_line_progress_meter('Progress Meter', i+1, len(data2), 'Predicting list :') and i+1 != len(data2):
             	    raise CancelExecution("Execution Canceled")
                 list_result.append(r)
             
@@ -131,13 +133,16 @@ while True:
             test_y = Process_y(data2["Own_Rate"])
 
 
-            rf = Train(train_x, train_y)
-
+            train_mod = Train(train_x, train_y)
+            rf = train_mod[0]
+            model = train_mod[1]
+            
             test_y = test_y.to_numpy()
-            Precision_result = Precision_test(rf.predict(test_x), test_y)
+            Precision_result = Precision_test((rf.predict(test_x)+model.predict(test_x))/2, test_y)
+            #Precision_result = Precision_test((rf.predict(test_x)+Convert_to_list(model.predict(test_x)))/2, test_y)
 
             window['Prec_result'].Update(visible = True,text_color='white')
-            window['Prec_result'].Update("0.5 star precision :"+str(Precision_result[0])+" %"+"\n"+"Perfect precision :"+str(Precision_result[1])+" %")
+            window['Prec_result'].Update("0.5 star precision :"+str(Precision_result[0])+" %"+"\n"+"0.25 star precision precision :"+str(Precision_result[1])+" %")
             
         except Exception as e:
             window['Prec_result'].Update(visible = True,text_color='red')
