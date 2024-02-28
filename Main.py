@@ -139,7 +139,6 @@ while True:
             
             test_y = test_y.to_numpy()
             Precision_result = Precision_test((rf.predict(test_x)+model.predict(test_x))/2, test_y)
-            #Precision_result = Precision_test((rf.predict(test_x)+Convert_to_list(model.predict(test_x)))/2, test_y)
 
             window['Prec_result'].Update(visible = True,text_color='white')
             window['Prec_result'].Update("0.5 star precision :"+str(Precision_result[0])+" %"+"\n"+"0.25 star precision precision :"+str(Precision_result[1])+" %")
