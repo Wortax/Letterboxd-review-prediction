@@ -11,8 +11,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import os
+import lightgbm as lgb
 
 
+def Convert_to_list(narr):
+    new_l = []
+    for i in narr.astype(int).tolist():
+    	new_l.append(i[0])
+    return new_l
+	
 def Create_dirdict(dataframe):
     dict_={}
     for i in range(0,len(dataframe)):
@@ -66,9 +73,10 @@ def Precision_test(pred,value):
         if abs(pred[i]-value[i])<=1 :
             compt+=1
     half_star_p = round(compt/len(value)*100,2)
+    
     compt = 0
     for i in range(0,len(value)):
-        if abs(pred[i]-value[i])<1 :
+        if abs(pred[i]-value[i])<=0.5 :
             compt+=1
     perfect_p = round(compt/len(value)*100,2)
     return [half_star_p, perfect_p]
@@ -79,14 +87,20 @@ def Precision_test(pred,value):
 
   
 def Train(x,y):
+    #model=CatBoostClassifier(eval_metric='Accuracy',verbose=0)
+    model= lgb.LGBMClassifier(verbosity=-1)
+    model.fit(x,y)
     rf = RandomForestClassifier(n_estimators = 100, max_depth=None, random_state = 1)
     rf.fit(x, y)
-    return rf
+    return (rf,model)
 
-def check_movie(data,rf,act_dict,dir_dict,coun_dict):
+def check_movie(data,rf,model,act_dict,dir_dict,coun_dict):
     df = pd.DataFrame([data], columns=["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2","Country"])
     df = Process_data(df,False,act_dict,dir_dict,coun_dict)
-    return [data[0], rf.predict(df)[0]/2]
+    rf_pred=rf.predict(df)
+    mod_pred= model.predict(df)
+
+    return [data.iloc[0], (rf_pred[0]+mod_pred[0])/4]
 
 
 
