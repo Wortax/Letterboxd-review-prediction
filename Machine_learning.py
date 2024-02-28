@@ -12,13 +12,6 @@ import numpy as np
 import seaborn as sns
 import os
 import lightgbm as lgb
-
-
-def Convert_to_list(narr):
-    new_l = []
-    for i in narr.astype(int).tolist():
-    	new_l.append(i[0])
-    return new_l
 	
 def Create_dirdict(dataframe):
     dict_={}
@@ -83,16 +76,14 @@ def Precision_test(pred,value):
 
 
 
-
-
   
 def Train(x,y):
-    #model=CatBoostClassifier(eval_metric='Accuracy',verbose=0)
     model= lgb.LGBMClassifier(verbosity=-1)
     model.fit(x,y)
     rf = RandomForestClassifier(n_estimators = 100, max_depth=None, random_state = 1)
     rf.fit(x, y)
     return (rf,model)
+
 
 def check_movie(data,rf,model,act_dict,dir_dict,coun_dict):
     df = pd.DataFrame([data], columns=["Title","Average_Rating","Director","Number_reviews","Release_Date","Actor1","Actor2","Genre1","Genre2","Country"])
