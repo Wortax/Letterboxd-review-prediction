@@ -97,7 +97,7 @@ while True:
             model = train_mod[1]
 
             list_result= []
-            for i in range(1,len(data2)):
+            for i in range(0,len(data2)):
                 r = check_movie(data2.iloc[i],rf,model,actors_dict,dir_dict,coun_dict)
                 if not sg.one_line_progress_meter('Progress Meter', i+1, len(data2), 'Predicting list :') and i+1 != len(data2):
             	    raise CancelExecution("Execution Canceled")
