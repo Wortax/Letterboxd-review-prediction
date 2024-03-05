@@ -91,7 +91,7 @@ def check_movie(data,rf,model,act_dict,dir_dict,coun_dict):
     rf_pred=rf.predict(df)
     mod_pred= model.predict(df)
 
-    return [data.iloc[0], (rf_pred[0]+mod_pred[0])/4]
+    return [data.iloc[0],data.iloc[4], (rf_pred[0]+mod_pred[0])/4]
 
 
 
