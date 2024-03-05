@@ -14,7 +14,7 @@ def predict_dataset(dataset,output_file):
              for i in dataset :
                  if len(i)==0 :
                      continue
-                 i=[re.sub(r'[^\x00-\x7F]', ' ', i[0]),i[1]]
+                 i=[re.sub(r'[^\x00-\x7F]', ' ', i[0]),i[1],i[2]]
                  writer.writerow(i)
     outfile.close()
 
